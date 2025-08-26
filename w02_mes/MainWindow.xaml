@@ -1,0 +1,27 @@
+﻿<Window x:Class="w02_mes.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="W02-MES" Height="600" Width="900">
+    <Grid Margin="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- 顶部输入框 -->
+        <TextBox x:Name="FilterBox"
+                 Height="28"
+                 Margin="0,0,0,8"
+                 VerticalContentAlignment="Center"
+                 TextChanged="FilterBox_TextChanged"/>
+
+        <!-- 日志显示区 -->
+        <ListBox x:Name="LogList"
+                 Grid.Row="1"
+                 FontFamily="Consolas"
+                 FontSize="12"/>
+    </Grid>
+</Window>
