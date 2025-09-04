@@ -1,5 +1,6 @@
 using System.Collections.Specialized;
 using System.Configuration;
+using w02_mes.device.rivetGun;
 using w02_mes.http;
 using w02_mes.listen;
 
@@ -9,16 +10,16 @@ public class SlipwayInstall : Device
 {
 
     public override string Name { get; }
-    public override string Barcode { get; set; }
+    public override string Barcode { get; set; } = "";
     public override string DeviceType { get; }
     public override string DeviceCode { get; }
     
-    public string ScannerOkMqtt { get; set; }
+    public List<string> ScannerOkMqtt { get; set; }
 
-    public SlipwayInstall(string name, string deviceType, string deviceCode, string scannerOkMqtt)
+    public SlipwayInstall(string name, string deviceCode, List<string> scannerOkMqtt)
     {
         Name = name;
-        DeviceType = deviceType;
+        DeviceType = "60";
         DeviceCode = deviceCode;
         ScannerOkMqtt = scannerOkMqtt;
     }
@@ -36,16 +37,142 @@ public class SlipwayInstall : Device
 
         Task<string> readBarcodeAsync = BarcodeClient.ReadBarcodeAsync(ip);
         return readBarcodeAsync.Result;
+        
     }
 
-    public void SendOk()
+    public void InStation()
     {
-        HslManager.Mqtt.ReadRpc<bool>("Edge/WriteData", new { data = ScannerOkMqtt, value = true });
+        var readBarcode = this.ReadBarcode();
+        MainWindow.ShowLog(Name, "扫码成功：" + readBarcode);
+        Barcode = readBarcode;
+        var uploadByDevice = MesUploader.UploadByDevice(this, 0, false);
+        if (uploadByDevice.success)
+        {
+            MainWindow.ShowLog(Name, "上传mes成功：" + uploadByDevice.message);
+            _ = SendOk();
+        }
+        else
+        {
+            MainWindow.ShowLog(Name, "上传mes失败：" + uploadByDevice.message);
+        }
+    }
+
+    public async Task SendOk()
+    {
+        foreach (var se in ScannerOkMqtt)
+        {
+            _ = Task.Run(() =>
+            {
+                HslManager.Mqtt.ReadRpc<bool>("Edge/WriteData", new { data = se, value = true });
+                Thread.Sleep(1000);
+                HslManager.Mqtt.ReadRpc<bool>("Edge/WriteData", new { data = se, value = false });
+            });
+        }
     }
     
-    public override void Onfinish()
+
+    public override string ToJson()
     {
-        
+        List<object> list = new();
+
+        switch (Name)
+        {
+            case "滑台1":
+            case "滑台2":
+                List<RivetGunRecord> rivetGun1Data = RivetGunManager.rivetGun1.InstallData.Data;
+                List<RivetGunRecord> rivetGun2Data = RivetGunManager.rivetGun2.InstallData.Data;
+                List<RivetGunRecord> rivetGun3Data = RivetGunManager.rivetGun3.InstallData.Data;
+
+                list.Add(new { TagName = "拉铆枪：", Val = "1号拉铆枪" });
+                foreach (var se in rivetGun1Data)
+                {
+                    list.Add(new { TagName = "此次拉铆拉力", Val = se.此次拉铆拉力 });
+                    list.Add(new { TagName = "此次拉铆位移", Val = se.此次拉铆位移 });
+                    list.Add(new { TagName = "配方拉力上限", Val = se.配方拉力上限 });
+                    list.Add(new { TagName = "配方拉力下限", Val = se.配方拉力下限 });
+                    list.Add(new { TagName = "配方位移上限", Val = se.配方位移上限 });
+                    list.Add(new { TagName = "配方位移下限", Val = se.配方位移下限 });
+                    list.Add(new { TagName = "判定结果", Val = se.判定结果 });
+                    // list.Add(new { TagName = "采集时间", Val = se.采集时间.ToString("yyyy-MM-dd HH:mm:ss") });
+                }
+
+                list.Add(new { TagName = "拉铆枪：", Val = "2号拉铆枪" });
+                foreach (var se in rivetGun2Data)
+                {
+                    list.Add(new { TagName = "此次拉铆拉力", Val = se.此次拉铆拉力 });
+                    list.Add(new { TagName = "此次拉铆位移", Val = se.此次拉铆位移 });
+                    list.Add(new { TagName = "配方拉力上限", Val = se.配方拉力上限 });
+                    list.Add(new { TagName = "配方拉力下限", Val = se.配方拉力下限 });
+                    list.Add(new { TagName = "配方位移上限", Val = se.配方位移上限 });
+                    list.Add(new { TagName = "配方位移下限", Val = se.配方位移下限 });
+                    list.Add(new { TagName = "判定结果", Val = se.判定结果 });
+                    // list.Add(new { TagName = "采集时间", Val = se.采集时间.ToString("yyyy-MM-dd HH:mm:ss") });
+                }
+                
+                list.Add(new { TagName = "拉铆枪：", Val = "3号拉铆枪" });
+                foreach (var se in rivetGun3Data)
+                {
+                    list.Add(new { TagName = "此次拉铆拉力", Val = se.此次拉铆拉力 });
+                    list.Add(new { TagName = "此次拉铆位移", Val = se.此次拉铆位移 });
+                    list.Add(new { TagName = "配方拉力上限", Val = se.配方拉力上限 });
+                    list.Add(new { TagName = "配方拉力下限", Val = se.配方拉力下限 });
+                    list.Add(new { TagName = "配方位移上限", Val = se.配方位移上限 });
+                    list.Add(new { TagName = "配方位移下限", Val = se.配方位移下限 });
+                    list.Add(new { TagName = "判定结果", Val = se.判定结果 });
+                    // list.Add(new { TagName = "采集时间", Val = se.采集时间.ToString("yyyy-MM-dd HH:mm:ss") });
+                }
+                
+                RivetGunManager.rivetGun1.InstallData.Data = new();
+                RivetGunManager.rivetGun2.InstallData.Data = new();
+                RivetGunManager.rivetGun3.InstallData.Data = new();
+                break;
+
+            case "滑台3":
+                List<RivetGunRecord> rivetGun4Data = RivetGunManager.rivetGun4.InstallData.Data;
+                
+                list.Add(new { TagName = "拉铆枪：", Val = "4号拉铆枪" });
+                foreach (var se in rivetGun4Data)
+                {
+                    list.Add(new { TagName = "此次拉铆拉力", Val = se.此次拉铆拉力 });
+                    list.Add(new { TagName = "此次拉铆位移", Val = se.此次拉铆位移 });
+                    list.Add(new { TagName = "配方拉力上限", Val = se.配方拉力上限 });
+                    list.Add(new { TagName = "配方拉力下限", Val = se.配方拉力下限 });
+                    list.Add(new { TagName = "配方位移上限", Val = se.配方位移上限 });
+                    list.Add(new { TagName = "配方位移下限", Val = se.配方位移下限 });
+                    list.Add(new { TagName = "判定结果", Val = se.判定结果 });
+                    // list.Add(new { TagName = "采集时间", Val = se.采集时间.ToString("yyyy-MM-dd HH:mm:ss") });
+                }
+                RivetGunManager.rivetGun4.InstallData.Data = new();
+                break;
+
+        }
+
+        // 序列化为 JSON 数组字符串
+        return System.Text.Json.JsonSerializer.Serialize(list);
+    }
+
+    public override void OutStation()
+    {
+        MainWindow.ShowLog(Name, "出站信号");
+        Task.Run(() =>
+        {
+            if (Barcode == "" || Barcode == null)
+            {
+                Barcode = "";
+            }
+
+            var uploadByDevice = MesUploader.UploadByDevice(this, 1, true);
+            Barcode = "";
+            if (uploadByDevice.success)
+            {
+                MainWindow.ShowLog(Name, "上传mes成功：" + uploadByDevice.success);
+                _ = SendOk();
+            }
+            else
+            {
+                MainWindow.ShowLog(Name, "上传mes失败：" + uploadByDevice.message);
+            }
+        });
         
     }
 }

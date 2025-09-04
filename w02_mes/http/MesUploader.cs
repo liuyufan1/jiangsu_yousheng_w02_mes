@@ -2,6 +2,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using w02_mes.device;
+using w02_mes.start;
 
 namespace w02_mes.http;
 
@@ -10,17 +11,25 @@ public static class MesUploader
     private static readonly string _url = "http://101.226.8.125:2030/api/dataportal/invoke"; // MES接口URL
 
     private static readonly int _invOrg = 1;
+    private static HttpClient client = new ();
     
+    static MesUploader()
+    {
+        client.Timeout = new TimeSpan(0, 0, 10);
+    }
+  
     /// <summary>
     /// 上传条码和过站类型到MES
     /// </summary>
     /// <param name="device">设备实例</param>
     /// <param name="moveType">过站类型(0:入站,1:出站,99:过程)</param>
+    /// <param name="needUpData">是否调用toJson方法</param>
     /// <returns>MES接口响应字符串</returns>
-    public static bool UploadByDevice(Device device, int moveType)
+    public static (bool success, string message) UploadByDevice(Device device, int moveType,  bool needUpData)
     {
-        var uploadAsync = UploadAsync(device.Barcode, moveType, device.DeviceType, device.DeviceCode, moveType == 1 ? device.GetData() : new List<string>());
-        return  uploadAsync.Result;
+        string value = needUpData ? device.ToJson() : "";
+        var uploadAsync = UploadAsync(device.Barcode??"", moveType, device.DeviceType, device.DeviceCode,value);
+        return  uploadAsync.GetAwaiter().GetResult();
     }
 
     /// <summary>
@@ -30,17 +39,9 @@ public static class MesUploader
     /// <param name="moveType">过站类型(0:入站,1:出站,99:过程)</param>
     /// <param name="deviceCode">设备编号</param>
     /// <returns>MES接口响应字符串</returns>
-    public static async Task<bool> UploadAsync(string barcode, int moveType, string deviceType, string deviceCode, List<string> activeValues)
+    public static async Task<(bool success, string message)> UploadAsync(string barcode, int moveType, string deviceType, string deviceCode, string activeValues)
     {
-        // 生成 actualValue JSON 字符串数组
-        var items = activeValues.Select((val, index) =>
-        {
-            string jsonVal = string.IsNullOrEmpty(val) ? "\"\"" : (int.TryParse(val, out _) || double.TryParse(val, out _) || bool.TryParse(val, out _) ? val : $"\"{val}\"");
-            return $"{{\"TargetName\":\"{index + 1}\",\"Val\":{jsonVal}}}";
-        });
-        string actualValueJson = "[" + string.Join(",", items) + "]";
-
-        string targetName = "deviceValue";
+        
         var reqObj = new
         {
             ApiType = "ScadaController",
@@ -52,11 +53,11 @@ public static class MesUploader
                     Value = new
                     {
                         invOrg = _invOrg,
-                        deviceType,
-                        deviceCode,
-                        actualValue = actualValueJson,  // JSON字符串数组格式
+                        deviceType = deviceType,
+                        deviceCode = deviceCode,
+                        actualValue = activeValues,  // JSON字符串数组格式
                         sn = barcode,
-                        moveType,
+                        moveType = moveType,
                         dataGenTime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fff+08:00"),
                         isFirstProcess = false
                     }
@@ -71,16 +72,14 @@ public static class MesUploader
 
         string json = JsonSerializer.Serialize(reqObj);
 
-        MainWindow.ShowLog("Mes", $"MES接口请求内容: {json}");
-        
-        using var client = new HttpClient();
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
-        var resp = await client.PostAsync(_url, content);
-
-        string readAsStringAsync = await resp.Content.ReadAsStringAsync();
-        MainWindow.ShowLog("Mes", $"MES接口响应内容:{resp.StatusCode} {readAsStringAsync}");
         try
         {
+            MainWindow.ShowLog("Mes", $"MES接口请求内容: {json}");
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var resp = client.PostAsync(_url, content).Result;
+            string readAsStringAsync = resp.Content.ReadAsStringAsync().Result;
+            MainWindow.ShowLog("Mes", $"MES接口响应内容:{resp.StatusCode} {readAsStringAsync}");
+            
             var dict = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(readAsStringAsync);
 
             if (dict != null && dict.TryGetValue("Success", out var successElement))
@@ -108,19 +107,15 @@ public static class MesUploader
 
                 if (isSuccess)
                 {
-                    MainWindow.ShowLog("Mes", "MES接口返回：成功");
-                    return true;
+                    return (true, "成功");
                 }
-                MainWindow.ShowLog("Mes", "MES接口返回：失败");
-                return false;
+                return (false,"MES接口返回：" + readAsStringAsync);
             }
-            MainWindow.ShowLog("Mes", "MES接口返回内容无法解析Success字段");
-            return false;
+            return (false, "MES接口返回内容无法解析Success字段");
         }
         catch(Exception ex)
         {
-            MainWindow.ShowLog("Mes", $"MES接口返回内容无法解析: {ex.Message}");
-            return false;
+            return (false, $"MES接口返回内容无法解析: {ex.Message}");
         }
         
 

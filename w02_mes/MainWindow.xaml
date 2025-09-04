@@ -9,6 +9,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/> <!-- 底部选择和按钮 -->
         </Grid.RowDefinitions>
 
         <!-- 顶部输入框 -->
@@ -23,5 +24,31 @@
                  Grid.Row="1"
                  FontFamily="Consolas"
                  FontSize="12"/>
+
+        <!-- 底部选择框 + 按钮 -->
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Left"
+                    Margin="0,8,0,0">
+            <ComboBox x:Name="PlatformSelect"
+                      Width="120"
+                      Height="28"
+                      VerticalContentAlignment="Center"
+                      SelectedIndex="0"
+                      Margin="0,0,8,0">
+                <ComboBoxItem Content="滑台1"/>
+                <ComboBoxItem Content="滑台2"/>
+                <ComboBoxItem Content="滑台3"/>
+            </ComboBox>
+
+            <!-- 出站按钮 -->
+            <Button x:Name="ExitButton"
+                    Content="出站"
+                    Width="80"
+                    Height="28"
+                    Click="ExitButton_Click"
+                    Margin="0,0,8,0"/>
+
+        </StackPanel>
     </Grid>
 </Window>

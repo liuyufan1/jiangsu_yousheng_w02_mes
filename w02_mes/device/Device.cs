@@ -10,15 +10,7 @@ public abstract class Device
     public abstract string DeviceType { get; }
     
     public abstract string DeviceCode { get; }
-    
-    public List<string> Data = new();
-    
-    public List<string> GetData()
-    {
-        List<string> DataTemp = Data;
-        Data = new List<string>();
-        return DataTemp;
-    }
 
-    public abstract void Onfinish();
+    public abstract string ToJson();
+    public abstract void OutStation();
 }

@@ -1,6 +1,10 @@
 ﻿
 using System.Windows;
+using System.Windows.Controls;
 using Serilog;
+using w02_mes.device.gelatinize;
+using w02_mes.device.rollingRubber;
+using w02_mes.device.slipway;
 
 namespace w02_mes;
 
@@ -71,5 +75,59 @@ public partial class MainWindow : Window
     {
         _filter = FilterBox.Text?.Trim() ?? string.Empty;
         RefreshLogList();
+    }
+
+    private void ExitButton_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            string selectedPlatform = (PlatformSelect.SelectedItem as ComboBoxItem)?.Content?.ToString();
+
+            switch (selectedPlatform)
+            {
+                case "滑台1":
+                    ShowLog("UI", "出站：执行滑台1的逻辑");
+                    // 调用滑台1的出站方法
+                    SlipwayManager.slipway1.OutStation();
+                    break;
+
+                case "滑台2":
+                    ShowLog("UI", "出站：执行滑台2的逻辑");
+                    // 调用滑台2的出站方法
+                    SlipwayManager.slipway2.OutStation();
+                    break;
+
+                case "滑台3":
+                    ShowLog("UI", "出站：执行滑台3的逻辑");
+                    //  调用滑台3的出站方法
+                    SlipwayManager.slipway3.OutStation();
+                    break;
+
+                default:
+                    ShowLog("UI", "未选择滑台！");
+                    break;
+            }
+            
+        }catch(Exception ex)
+        {
+            ShowLog("UI", "出站异常：" + ex.Message);
+        }
+        
+    }
+
+    private void RollGlueScanButton_Click(object sender, RoutedEventArgs e)
+    {
+        
+        RollingRubberManager.Mqttmanage("开始扫码", "true");
+    }
+
+    private void GelatinizeScanButton_Click(object sender, RoutedEventArgs e)
+    {
+        GelatinizeManager.Mqttmanage("开始扫码", "true");
+    }
+
+    private void GelatinizeScanButton_finish_Click(object sender, RoutedEventArgs e)
+    {
+        GelatinizeManager.Mqttmanage("完成信号", "true");
     }
 }

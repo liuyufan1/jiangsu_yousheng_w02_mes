@@ -14,43 +14,44 @@ public class BarcodeClient
     /// </summary>
     public static async Task<string> ReadBarcodeAsync(string ip, int port = 2001, int timeout = 2000)
     {
-        for (int attempt = 1; attempt <= 2; attempt++) // 最多尝试两次
+        for (int attempt = 1; attempt <= 2; attempt++)
         {
             try
             {
-                using TcpClient client = new TcpClient();
-                
-                // 设置连接超时
+                using var client = new TcpClient();
+
+                // ConnectAsync 超时控制
                 var connectTask = client.ConnectAsync(ip, port);
                 if (await Task.WhenAny(connectTask, Task.Delay(timeout)) != connectTask)
                 {
-                    if (attempt == 2) return ""; // 第二次仍超时直接返回
-                    continue; // 第一次超时重试
+                    client.Close();
+                    if (attempt == 2) return "";
+                    continue;
                 }
 
-                using NetworkStream stream = client.GetStream();
-                stream.ReadTimeout = timeout;
-                stream.WriteTimeout = timeout;
+                using var stream = client.GetStream();
 
                 // 发送 start
                 byte[] sendBytes = Encoding.UTF8.GetBytes("start");
-                await stream.WriteAsync(sendBytes, 0, sendBytes.Length);
+                using var ctsWrite = new CancellationTokenSource(timeout);
+                await stream.WriteAsync(sendBytes, 0, sendBytes.Length, ctsWrite.Token);
 
-                // 接收返回数据
+                // 接收返回
                 byte[] buffer = new byte[1024];
-                int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+                using var ctsRead = new CancellationTokenSource(timeout);
+                int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, ctsRead.Token);
+
                 if (bytesRead > 0)
                 {
                     string result = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
-                 
                     return string.IsNullOrEmpty(result) ? "" : result;
                 }
 
-                if (attempt == 2) return ""; // 第二次没有数据直接返回
+                if (attempt == 2) return "";
             }
             catch (Exception ex)
             {
-                if (attempt == 2) // 第二次异常返回 null
+                if (attempt == 2)
                 {
                     LogService.Error("scanner", $"ReadBarcode 异常: {ex.Message}");
                     return "";
@@ -58,6 +59,7 @@ public class BarcodeClient
             }
         }
 
-        return ""; // 不会走到这里，保留以防万一
+        return "";
     }
+
 }

@@ -2,6 +2,11 @@ using System.Text;
 using System.Text.RegularExpressions;
 using HslCommunication;
 using HslCommunication.MQTT;
+using w02_mes.device.gelatinize;
+using w02_mes.device.pressureSleeveBarrel;
+using w02_mes.device.rivetGun;
+using w02_mes.device.rollingRubber;
+using w02_mes.device.slipway;
 
 namespace w02_mes.listen;
 
@@ -31,6 +36,7 @@ public class HslManager
         MqttClient.SubscribeMessage("滑台/#");
         MqttClient.SubscribeMessage("W02滚胶/#");
         MqttClient.SubscribeMessage("W02涂胶/#");
+        MqttClient.SubscribeMessage("压套筒/#");
 
 
 
@@ -69,35 +75,55 @@ public class HslManager
             case "W02涂胶":
                 HandleW02GluePaint(subTopic, mqttValue);
                 break;
+            case "压套筒":
+                HandlePressureSleeveBarrel(subTopic, mqttValue);
+                break;
             default:
                 MainWindow.ShowLog("未知Mqtt topic", $"{topic}: {mqttValue}");
                 break;
         }
     }
 
-    // 具体处理方法示例
+    // 具体处理方法
     private static void HandleRivetingGun(string topic, string value)
     {
         string prefix = topic.Split('/')[0]; // 第一个/前的
         string suffix = topic.Contains("/") ? topic.Substring(topic.IndexOf('/') + 1) : "";
-        RivetGunMqttListen.Mqttmanage(prefix, suffix, value);
+        RivetGunManager.Mqttmanage(prefix, suffix, value);
         
     }
 
     private static void HandleSlider(string topic, string value)
     {
-        MainWindow.ShowLog("滑台", $"{topic}: {value}");
-        Slipway.MqttManager(topic, value);
+        try
+        {
+            SlipwayManager.MqttManager(topic, value);
+        }
+        catch (Exception e)
+        {
+            MainWindow.ShowLog("滑台", $"{topic}: {value}异常： {e.Message}");
+        }
     }
 
     private static void HandleW02GlueRoll(string topic, string value)
     {
-        MainWindow.ShowLog("W02滚胶", $"{topic}: {value}");
+        if (topic.Contains("心跳"))
+            return;
+        if ("false".Equals(value, StringComparison.OrdinalIgnoreCase))
+            return;
+        RollingRubberManager.Mqttmanage(topic, value);
     }
 
     private static void HandleW02GluePaint(string topic, string value)
     {
-        MainWindow.ShowLog("W02涂胶", $"{topic}: {value}");
+        if ("false".Equals(value, StringComparison.OrdinalIgnoreCase))
+            return;
+        GelatinizeManager.Mqttmanage(topic, value);
+    }
+    
+    private static void HandlePressureSleeveBarrel(string topic, string value)
+    {
+        PressureSleeveBarrelManager.Mqttmanage(topic, value);
     }
 
 }
