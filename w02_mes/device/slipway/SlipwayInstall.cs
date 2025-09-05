@@ -83,45 +83,68 @@ public class SlipwayInstall : Device
                 List<RivetGunRecord> rivetGun2Data = RivetGunManager.rivetGun2.InstallData.Data;
                 List<RivetGunRecord> rivetGun3Data = RivetGunManager.rivetGun3.InstallData.Data;
 
-                list.Add(new { TagName = "拉铆枪：", Val = "1号拉铆枪" });
-                foreach (var se in rivetGun1Data)
+                if (rivetGun1Data.Any())
                 {
-                    list.Add(new { TagName = "此次拉铆拉力", Val = se.此次拉铆拉力 });
-                    list.Add(new { TagName = "此次拉铆位移", Val = se.此次拉铆位移 });
-                    list.Add(new { TagName = "配方拉力上限", Val = se.配方拉力上限 });
-                    list.Add(new { TagName = "配方拉力下限", Val = se.配方拉力下限 });
-                    list.Add(new { TagName = "配方位移上限", Val = se.配方位移上限 });
-                    list.Add(new { TagName = "配方位移下限", Val = se.配方位移下限 });
-                    list.Add(new { TagName = "判定结果", Val = se.判定结果 });
-                    // list.Add(new { TagName = "采集时间", Val = se.采集时间.ToString("yyyy-MM-dd HH:mm:ss") });
+                    list.Add(new { TagName = "拉铆枪：", Val = "1号拉铆枪" });
+
+                    // 只取一次配方数据（第一条即可）
+                    var first = rivetGun1Data.First();
+                    list.Add(new { TagName = "配方拉力上限", Val = first.配方拉力上限 });
+                    list.Add(new { TagName = "配方拉力下限", Val = first.配方拉力下限 });
+                    list.Add(new { TagName = "配方位移上限", Val = first.配方位移上限 });
+                    list.Add(new { TagName = "配方位移下限", Val = first.配方位移下限 });
+
+                    // 每条记录都传动态数据
+                    foreach (var se in rivetGun1Data)
+                    {
+                        list.Add(new { TagName = "此次拉铆拉力", Val = se.此次拉铆拉力 });
+                        list.Add(new { TagName = "此次拉铆位移", Val = se.此次拉铆位移 });
+                        list.Add(new { TagName = "判定结果", Val = se.判定结果 });
+                        // list.Add(new { TagName = "采集时间", Val = se.采集时间.ToString("yyyy-MM-dd HH:mm:ss") });
+                    }
                 }
 
-                list.Add(new { TagName = "拉铆枪：", Val = "2号拉铆枪" });
-                foreach (var se in rivetGun2Data)
+                if (rivetGun2Data.Any())
                 {
-                    list.Add(new { TagName = "此次拉铆拉力", Val = se.此次拉铆拉力 });
-                    list.Add(new { TagName = "此次拉铆位移", Val = se.此次拉铆位移 });
-                    list.Add(new { TagName = "配方拉力上限", Val = se.配方拉力上限 });
-                    list.Add(new { TagName = "配方拉力下限", Val = se.配方拉力下限 });
-                    list.Add(new { TagName = "配方位移上限", Val = se.配方位移上限 });
-                    list.Add(new { TagName = "配方位移下限", Val = se.配方位移下限 });
-                    list.Add(new { TagName = "判定结果", Val = se.判定结果 });
-                    // list.Add(new { TagName = "采集时间", Val = se.采集时间.ToString("yyyy-MM-dd HH:mm:ss") });
+                    list.Add(new { TagName = "拉铆枪：", Val = "2号拉铆枪" });
+
+                    // 只取一次配方数据（第一条即可）
+                    var first = rivetGun2Data.First();
+                    list.Add(new { TagName = "配方拉力上限", Val = first.配方拉力上限 });
+                    list.Add(new { TagName = "配方拉力下限", Val = first.配方拉力下限 });
+                    list.Add(new { TagName = "配方位移上限", Val = first.配方位移上限 });
+                    list.Add(new { TagName = "配方位移下限", Val = first.配方位移下限 });
+
+                    // 每条记录都传动态数据
+                    foreach (var se in rivetGun2Data)
+                    {
+                        list.Add(new { TagName = "此次拉铆拉力", Val = se.此次拉铆拉力 });
+                        list.Add(new { TagName = "此次拉铆位移", Val = se.此次拉铆位移 });
+                        list.Add(new { TagName = "判定结果", Val = se.判定结果 });
+                        // list.Add(new { TagName = "采集时间", Val = se.采集时间.ToString("yyyy-MM-dd HH:mm:ss") });
+                    }
                 }
                 
-                list.Add(new { TagName = "拉铆枪：", Val = "3号拉铆枪" });
-                foreach (var se in rivetGun3Data)
+                if (rivetGun3Data.Any())
                 {
-                    list.Add(new { TagName = "此次拉铆拉力", Val = se.此次拉铆拉力 });
-                    list.Add(new { TagName = "此次拉铆位移", Val = se.此次拉铆位移 });
-                    list.Add(new { TagName = "配方拉力上限", Val = se.配方拉力上限 });
-                    list.Add(new { TagName = "配方拉力下限", Val = se.配方拉力下限 });
-                    list.Add(new { TagName = "配方位移上限", Val = se.配方位移上限 });
-                    list.Add(new { TagName = "配方位移下限", Val = se.配方位移下限 });
-                    list.Add(new { TagName = "判定结果", Val = se.判定结果 });
-                    // list.Add(new { TagName = "采集时间", Val = se.采集时间.ToString("yyyy-MM-dd HH:mm:ss") });
+                    list.Add(new { TagName = "拉铆枪：", Val = "3号拉铆枪" });
+
+                    // 只取一次配方数据（第一条即可）
+                    var first = rivetGun3Data.First();
+                    list.Add(new { TagName = "配方拉力上限", Val = first.配方拉力上限 });
+                    list.Add(new { TagName = "配方拉力下限", Val = first.配方拉力下限 });
+                    list.Add(new { TagName = "配方位移上限", Val = first.配方位移上限 });
+                    list.Add(new { TagName = "配方位移下限", Val = first.配方位移下限 });
+
+                    // 每条记录都传动态数据
+                    foreach (var se in rivetGun3Data)
+                    {
+                        list.Add(new { TagName = "此次拉铆拉力", Val = se.此次拉铆拉力 });
+                        list.Add(new { TagName = "此次拉铆位移", Val = se.此次拉铆位移 });
+                        list.Add(new { TagName = "判定结果", Val = se.判定结果 });
+                        // list.Add(new { TagName = "采集时间", Val = se.采集时间.ToString("yyyy-MM-dd HH:mm:ss") });
+                    }
                 }
-                
                 RivetGunManager.rivetGun1.InstallData.Data = new();
                 RivetGunManager.rivetGun2.InstallData.Data = new();
                 RivetGunManager.rivetGun3.InstallData.Data = new();
@@ -130,17 +153,25 @@ public class SlipwayInstall : Device
             case "滑台3":
                 List<RivetGunRecord> rivetGun4Data = RivetGunManager.rivetGun4.InstallData.Data;
                 
-                list.Add(new { TagName = "拉铆枪：", Val = "4号拉铆枪" });
-                foreach (var se in rivetGun4Data)
+                if (rivetGun4Data.Any())
                 {
-                    list.Add(new { TagName = "此次拉铆拉力", Val = se.此次拉铆拉力 });
-                    list.Add(new { TagName = "此次拉铆位移", Val = se.此次拉铆位移 });
-                    list.Add(new { TagName = "配方拉力上限", Val = se.配方拉力上限 });
-                    list.Add(new { TagName = "配方拉力下限", Val = se.配方拉力下限 });
-                    list.Add(new { TagName = "配方位移上限", Val = se.配方位移上限 });
-                    list.Add(new { TagName = "配方位移下限", Val = se.配方位移下限 });
-                    list.Add(new { TagName = "判定结果", Val = se.判定结果 });
-                    // list.Add(new { TagName = "采集时间", Val = se.采集时间.ToString("yyyy-MM-dd HH:mm:ss") });
+                    list.Add(new { TagName = "拉铆枪：", Val = "4号拉铆枪" });
+
+                    // 只取一次配方数据（第一条即可）
+                    var first = rivetGun4Data.First();
+                    list.Add(new { TagName = "配方拉力上限", Val = first.配方拉力上限 });
+                    list.Add(new { TagName = "配方拉力下限", Val = first.配方拉力下限 });
+                    list.Add(new { TagName = "配方位移上限", Val = first.配方位移上限 });
+                    list.Add(new { TagName = "配方位移下限", Val = first.配方位移下限 });
+
+                    // 每条记录都传动态数据
+                    foreach (var se in rivetGun4Data)
+                    {
+                        list.Add(new { TagName = "此次拉铆拉力", Val = se.此次拉铆拉力 });
+                        list.Add(new { TagName = "此次拉铆位移", Val = se.此次拉铆位移 });
+                        list.Add(new { TagName = "判定结果", Val = se.判定结果 });
+                        // list.Add(new { TagName = "采集时间", Val = se.采集时间.ToString("yyyy-MM-dd HH:mm:ss") });
+                    }
                 }
                 RivetGunManager.rivetGun4.InstallData.Data = new();
                 break;
