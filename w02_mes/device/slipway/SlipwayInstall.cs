@@ -197,7 +197,6 @@ public class SlipwayInstall : Device
             if (uploadByDevice.success)
             {
                 MainWindow.ShowLog(Name, "上传mes成功：" + uploadByDevice.success);
-                _ = SendOk();
             }
             else
             {

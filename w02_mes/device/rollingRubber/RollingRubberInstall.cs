@@ -45,6 +45,14 @@ public class RollingRubberInstall : Device
         return MesUploader.UploadByDevice(this, 0, false);
         
     }
+    
+    public async Task SendOkOrFail()
+    {
+        HslManager.Mqtt.ReadRpc<bool>("Edge/WriteData", new { data = $"{Name}/扫码完成", value = true });
+        Thread.Sleep(1000); 
+        HslManager.Mqtt.ReadRpc<bool>("Edge/WriteData", new { data = $"{Name}/扫码完成", value = false });
+    }
+
     public override void OutStation()
     {
         var (success, message) = MesUploader.UploadByDevice(this, 1, true);

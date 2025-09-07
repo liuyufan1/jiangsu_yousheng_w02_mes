@@ -40,7 +40,7 @@ public class GelatinizeInstall : Device
 
     public async Task SendOkOrFail(bool flag)
     {
-        string suffix = flag ? "扫码完成" : "报警";
+        string suffix = flag ? "扫码完成" : "扫码报警";
         HslManager.Mqtt.ReadRpc<bool>("Edge/WriteData", new { data = $"{Name}/{suffix}", value = true });
         Thread.Sleep(1000); 
         HslManager.Mqtt.ReadRpc<bool>("Edge/WriteData", new { data = $"{Name}/{suffix}", value = false });

@@ -17,10 +17,10 @@ public class RollingRubberManager
                 if (!valueTuple.success)
                 {
                     MainWindow.ShowLog(rollingRubber1.Name, "上传mes失败：" + valueTuple.message);
-                    rollingRubber1.Barcode = "";
                     return;
                 }
                 MainWindow.ShowLog(rollingRubber1.Name, "上传mes成功：" + barcode);
+                _ = rollingRubber1.SendOkOrFail();
                 rollingRubber1.Barcode = barcode;
                 break;
             case "完成信号":
