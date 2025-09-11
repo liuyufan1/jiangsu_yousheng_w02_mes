@@ -40,8 +40,9 @@ public class GelatinizeManager
                 
                 break;
             case "完成信号":
-                MainWindow.ShowLog("w02涂胶", "完成信号");
-                _ = MesUploader.UploadByDevice(gelatinize1, 1, true);
+                MainWindow.ShowLog("w02涂胶", "完成信号    " + gelatinize1.Barcode);
+                if(gelatinize1.Barcode != "")
+                    _ = MesUploader.UploadByDevice(gelatinize1, 1, true);
                 break;
         }
     }

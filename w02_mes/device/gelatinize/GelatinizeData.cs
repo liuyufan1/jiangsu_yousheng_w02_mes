@@ -58,9 +58,8 @@ public class GelatinizeData
 
         var serialize = JsonSerializer.Serialize(list, new JsonSerializerOptions
         {
-            WriteIndented = false // 先不美化格式
+            WriteIndented = false // 不美化格式
         });
-        LogService.Information("test", serialize);
         return serialize;
     }
 

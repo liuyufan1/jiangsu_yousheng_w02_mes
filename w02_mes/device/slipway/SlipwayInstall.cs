@@ -42,6 +42,7 @@ public class SlipwayInstall : Device
 
     public void InStation()
     {
+        MainWindow.ShowLog(Name, "开始扫码");
         var readBarcode = this.ReadBarcode();
         MainWindow.ShowLog(Name, "扫码成功：" + readBarcode);
         Barcode = readBarcode;

@@ -3,7 +3,6 @@ namespace w02_mes.device.rivetGun;
 public class RivetGunInstallData
 {
     public List<RivetGunRecord> Data { get; set; } = new();
-    // todo
     public void AddData(List<float> newData)
     {
         var roundedData = newData.Select(v => (float)Math.Round(v, 2)).ToList();
