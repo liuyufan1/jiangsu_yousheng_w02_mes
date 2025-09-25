@@ -5,8 +5,8 @@ namespace w02_mes.device.slipway;
 
 public class SlipwayManager
 {
-    public static SlipwayInstall slipway1 = new ("滑台1", "JSYS10221038", new List<string>{"滑台/3-1扫码完成", "滑台/3-2扫码完成"});
-    public static SlipwayInstall slipway2 = new ("滑台2", "JSYS10221039", new List<string>{"滑台/3-1扫码完成", "滑台/3-2扫码完成"});
+    public static SlipwayInstall slipway1 = new ("滑台1", "JSYS10221038", new List<string>{"滑台/3-1扫码完成"});
+    public static SlipwayInstall slipway2 = new ("滑台2", "JSYS10221039", new List<string>{"滑台/3-2扫码完成"});
     public static SlipwayInstall slipway3 = new ("滑台3", "JSYS10221060", new List<string>{"滑台/3-3扫码完成"});
     
     // 分配mqtt收到的信号

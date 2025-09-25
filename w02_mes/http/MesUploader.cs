@@ -1,8 +1,12 @@
 using System.Net.Http;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using w02_mes.device;
+using w02_mes.sqlServer;
 using w02_mes.start;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace w02_mes.http;
 
@@ -27,9 +31,34 @@ public static class MesUploader
     /// <returns>MES接口响应字符串</returns>
     public static (bool success, string message) UploadByDevice(Device device, int moveType,  bool needUpData)
     {
-        string value = needUpData ? device.ToJson() : "";
-        var uploadAsync = UploadAsync(device.Barcode??"", moveType, device.DeviceType, device.DeviceCode,value);
+        string rawValue = "";
+        if (needUpData)
+        {
+            rawValue = device.ToJson();
+            // 插入数据库
+            var dataEntity = new DataEntity();
+            dataEntity.Barcode = device.Barcode;
+            dataEntity.Step = device.Name;
+            string readableValue = UnicodeToString(rawValue);  // 转换 \uXXXX 为中文
+            LogService.Information("转义后数据", readableValue);
+            dataEntity.Data = readableValue;
+            dataEntity.CreateTime = DateTime.Now;
+            _ = DataRepository.InsertAsync(dataEntity);
+            
+        }
+        
+        var uploadAsync = UploadAsync(device.Barcode??"", moveType, device.DeviceType, device.DeviceCode,rawValue);
         return  uploadAsync.GetAwaiter().GetResult();
+    }
+    private static string UnicodeToString(string input)
+    {
+        if (string.IsNullOrEmpty(input)) return input;
+
+        return Regex.Replace(input, @"\\u([0-9a-fA-F]{4})", match =>
+        {
+            // 将 \uXXXX 转为对应字符
+            return ((char)Convert.ToInt32(match.Groups[1].Value, 16)).ToString();
+        });
     }
 
     /// <summary>

@@ -35,7 +35,6 @@ public class RollingRubberInstall : Device
 
         Task<string> readBarcodeAsync = BarcodeClient.ReadBarcodeAsync(ip);
         return readBarcodeAsync.Result;
-        // return "0050010400401G41131046190022";
     }
 
 
@@ -46,7 +45,7 @@ public class RollingRubberInstall : Device
         
     }
     
-    public async Task SendOkOrFail()
+    public async Task SendOk()
     {
         HslManager.Mqtt.ReadRpc<bool>("Edge/WriteData", new { data = $"{Name}/扫码完成", value = true });
         Thread.Sleep(1000); 

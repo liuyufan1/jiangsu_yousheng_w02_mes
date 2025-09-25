@@ -57,15 +57,15 @@ public class GelatinizeInstall : Device
         data.B计量出口实际压力   = HslManager.Mqtt.ReadRpc<float>("Edge/DeviceData", new { data = "涂胶机/B计量出口实际压力" }).Content;
         data.A计量出口速度       = HslManager.Mqtt.ReadRpc<float>("Edge/DeviceData", new { data = "涂胶机/A计量出口速度" }).Content;
         data.B计量出口速度       = HslManager.Mqtt.ReadRpc<float>("Edge/DeviceData", new { data = "涂胶机/B计量出口速度" }).Content;
-        data.AB总速度            = HslManager.Mqtt.ReadRpc<float>("Edge/DeviceData", new { data = "涂胶机/AB总速度" }).Content;
-        data.压盘A_1             = HslManager.Mqtt.ReadRpc<float>("Edge/DeviceData", new { data = "涂胶机/压盘A-1" }).Content;
-        data.压盘A_2             = HslManager.Mqtt.ReadRpc<float>("Edge/DeviceData", new { data = "涂胶机/压盘A-2" }).Content;
-        data.压盘B_1             = HslManager.Mqtt.ReadRpc<float>("Edge/DeviceData", new { data = "涂胶机/压盘B-1" }).Content;
-        data.压盘B_2             = HslManager.Mqtt.ReadRpc<float>("Edge/DeviceData", new { data = "涂胶机/压盘B-2" }).Content;
-        data.胶管A_1             = HslManager.Mqtt.ReadRpc<float>("Edge/DeviceData", new { data = "涂胶机/胶管A-1" }).Content;
-        data.胶管A_2             = HslManager.Mqtt.ReadRpc<float>("Edge/DeviceData", new { data = "涂胶机/胶管A-2" }).Content;
-        data.胶管B_1             = HslManager.Mqtt.ReadRpc<float>("Edge/DeviceData", new { data = "涂胶机/胶管B-1" }).Content;
-        data.胶管B_2             = HslManager.Mqtt.ReadRpc<float>("Edge/DeviceData", new { data = "涂胶机/胶管B-2" }).Content;
+        data.AB总速度           = HslManager.Mqtt.ReadRpc<float>("Edge/DeviceData", new { data = "涂胶机/AB总速度" }).Content;
+        data.压盘A_1            = HslManager.Mqtt.ReadRpc<float>("Edge/DeviceData", new { data = "涂胶机/压盘A-1" }).Content;
+        data.压盘A_2            = HslManager.Mqtt.ReadRpc<float>("Edge/DeviceData", new { data = "涂胶机/压盘A-2" }).Content;
+        data.压盘B_1            = HslManager.Mqtt.ReadRpc<float>("Edge/DeviceData", new { data = "涂胶机/压盘B-1" }).Content;
+        data.压盘B_2            = HslManager.Mqtt.ReadRpc<float>("Edge/DeviceData", new { data = "涂胶机/压盘B-2" }).Content;
+        data.胶管A_1            = HslManager.Mqtt.ReadRpc<float>("Edge/DeviceData", new { data = "涂胶机/胶管A-1" }).Content;
+        data.胶管A_2            = HslManager.Mqtt.ReadRpc<float>("Edge/DeviceData", new { data = "涂胶机/胶管A-2" }).Content;
+        data.胶管B_1            = HslManager.Mqtt.ReadRpc<float>("Edge/DeviceData", new { data = "涂胶机/胶管B-1" }).Content;
+        data.胶管B_2            = HslManager.Mqtt.ReadRpc<float>("Edge/DeviceData", new { data = "涂胶机/胶管B-2" }).Content;
 
         return data.ToJson();
     }

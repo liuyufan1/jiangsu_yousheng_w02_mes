@@ -5,6 +5,7 @@ using Serilog;
 using w02_mes.device.gelatinize;
 using w02_mes.device.rollingRubber;
 using w02_mes.device.slipway;
+using w02_mes.helpers;
 
 namespace w02_mes;
 
@@ -23,12 +24,22 @@ public partial class MainWindow : Window
 
     // 当前过滤关键字
     private string _filter = string.Empty;
+    
+    // 滑台屏蔽 MES
+    public static bool BlockMesEnabled { get; private set; } = false;
+    
+    // 贴PC片（滚胶） 屏蔽 MES
+    public static bool BlockMesByPCEnabled { get; private set; } = false;
 
     public MainWindow()
     {
         InitializeComponent();
         _instance = this;
-
+        var appConfig = ConfigHelper.Load();
+        BlockMesEnabled = appConfig.BlockMesEnabled;
+        BlockMesCheckBox.IsChecked = appConfig.BlockMesEnabled;
+        BlockMesByPCEnabled = appConfig.BlockMesByPCEnabled;
+        BlockMesByPCCheckBox.IsChecked = appConfig.BlockMesByPCEnabled;
         RefreshLogList();
     }
 
@@ -76,6 +87,45 @@ public partial class MainWindow : Window
         _filter = FilterBox.Text?.Trim() ?? string.Empty;
         RefreshLogList();
     }
+    
+    
+    private void EnterButton_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            string selectedPlatform = (PlatformSelect.SelectedItem as ComboBoxItem)?.Content?.ToString();
+
+            switch (selectedPlatform)
+            {
+                case "滑台1":
+                    ShowLog("UI", "入站：执行滑台1的逻辑");
+                    // 调用滑台1的出站方法
+                    SlipwayManager.slipway1.InStation();
+                    break;
+
+                case "滑台2":
+                    ShowLog("UI", "入站：执行滑台2的逻辑");
+                    // 调用滑台2的出站方法
+                    SlipwayManager.slipway2.InStation();
+                    break;
+
+                case "滑台3":
+                    ShowLog("UI", "入站：执行滑台3的逻辑");
+                    //  调用滑台3的出站方法
+                    SlipwayManager.slipway3.InStation();
+                    break;
+
+                default:
+                    ShowLog("UI", "未选择滑台！");
+                    break;
+            }
+            
+        }catch(Exception ex)
+        {
+            ShowLog("UI", "入站异常：" + ex.Message);
+        }
+
+    }
 
     private void ExitButton_Click(object sender, RoutedEventArgs e)
     {
@@ -117,7 +167,6 @@ public partial class MainWindow : Window
 
     private void RollGlueScanButton_Click(object sender, RoutedEventArgs e)
     {
-        
         RollingRubberManager.Mqttmanage("开始扫码", "true");
     }
 
@@ -129,5 +178,42 @@ public partial class MainWindow : Window
     private void GelatinizeScanButton_finish_Click(object sender, RoutedEventArgs e)
     {
         GelatinizeManager.Mqttmanage("完成信号", "true");
+    }
+
+  
+    private void BlockMesCheckBox_Checked(object sender, RoutedEventArgs e)
+    {
+        BlockMesEnabled = true;
+        var appConfig = ConfigHelper.Load();
+        appConfig.BlockMesEnabled = true;
+        ConfigHelper.Save(appConfig);
+        ShowLog("UI", "滑台屏蔽MES 已启用");
+    }
+
+    private void BlockMesCheckBox_Unchecked(object sender, RoutedEventArgs e)
+    {
+        BlockMesEnabled = false;
+        var appConfig = ConfigHelper.Load();
+        appConfig.BlockMesEnabled = false;
+        ConfigHelper.Save(appConfig);
+        ShowLog("UI", "滑台屏蔽MES 已关闭");
+    }
+
+    private void PCMesCheckBox_Checked(object sender, RoutedEventArgs e)
+    {
+        BlockMesByPCEnabled = true;
+        var appConfig = ConfigHelper.Load();
+        appConfig.BlockMesByPCEnabled = true;  // ⚡ 你需要在 AppConfig 类里增加这个字段
+        ConfigHelper.Save(appConfig);
+        ShowLog("UI", "PC片屏蔽MES 已启用");
+    }
+
+    private void PCMesCheckBox_Unchecked(object sender, RoutedEventArgs e)
+    {
+        BlockMesByPCEnabled = false;
+        var appConfig = ConfigHelper.Load();
+        appConfig.BlockMesByPCEnabled = false;
+        ConfigHelper.Save(appConfig);
+        ShowLog("UI", "PC片屏蔽MES 已关闭");
     }
 }

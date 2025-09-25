@@ -44,7 +44,7 @@ public class SlipwayInstall : Device
     {
         MainWindow.ShowLog(Name, "开始扫码");
         var readBarcode = this.ReadBarcode();
-        MainWindow.ShowLog(Name, "扫码成功：" + readBarcode);
+        MainWindow.ShowLog(Name, "扫码结果：" + readBarcode);
         Barcode = readBarcode;
         var uploadByDevice = MesUploader.UploadByDevice(this, 0, false);
         if (uploadByDevice.success)
@@ -55,6 +55,12 @@ public class SlipwayInstall : Device
         else
         {
             MainWindow.ShowLog(Name, "上传mes失败：" + uploadByDevice.message);
+            // 如果屏蔽mes则不判断返回结果
+            if (MainWindow.BlockMesEnabled)
+            {
+                MainWindow.ShowLog(Name, "mes结果已屏蔽，发送启动信号：" + uploadByDevice.message);
+                _ = SendOk();
+            }
         }
     }
 

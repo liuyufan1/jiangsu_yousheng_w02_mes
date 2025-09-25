@@ -17,10 +17,16 @@ public class RollingRubberManager
                 if (!valueTuple.success)
                 {
                     MainWindow.ShowLog(rollingRubber1.Name, "上传mes失败：" + valueTuple.message);
+                    // mes结果屏蔽
+                    if (MainWindow.BlockMesByPCEnabled)
+                    {
+                        MainWindow.ShowLog(rollingRubber1.Name, "贴PC片屏蔽MES");
+                        _ = rollingRubber1.SendOk();
+                    }
                     return;
                 }
                 MainWindow.ShowLog(rollingRubber1.Name, "上传mes成功：" + barcode);
-                _ = rollingRubber1.SendOkOrFail();
+                _ = rollingRubber1.SendOk();
                 rollingRubber1.Barcode = barcode;
                 break;
             case "完成信号":

@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="W02-MES" Height="600" Width="900">
+
     <Grid Margin="8">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -25,7 +26,7 @@
                  FontFamily="Consolas"
                  FontSize="12"/>
 
-        <!-- 底部选择框 + 按钮 -->
+        <!-- 底部选择框 + 按钮 + 单选框 -->
         <StackPanel Grid.Row="2"
                     Orientation="Horizontal"
                     HorizontalAlignment="Left"
@@ -41,6 +42,14 @@
                 <ComboBoxItem Content="滑台3"/>
             </ComboBox>
 
+            <!-- 入站按钮 -->
+            <Button x:Name="EnterButton"
+                    Content="入站"
+                    Width="80"
+                    Height="28"
+                    Click="EnterButton_Click"
+                    Margin="0,0,8,0"/>
+
             <!-- 出站按钮 -->
             <Button x:Name="ExitButton"
                     Content="出站"
@@ -48,6 +57,21 @@
                     Height="28"
                     Click="ExitButton_Click"
                     Margin="0,0,8,0"/>
+
+            <!-- 屏蔽MES 单选框 -->
+            <CheckBox x:Name="BlockMesCheckBox"
+                      Content="滑台屏蔽MES"
+                      VerticalAlignment="Center"
+                      Margin="0,0,8,0"
+                      Checked="BlockMesCheckBox_Checked"
+                      Unchecked="BlockMesCheckBox_Unchecked"/>
+            <!-- 屏蔽MES 单选框 -->
+            <CheckBox x:Name="BlockMesByPCCheckBox"
+                      Content="PC片屏蔽MES"
+                      VerticalAlignment="Center"
+                      Margin="0,0,8,0"
+                      Checked="PCMesCheckBox_Checked"
+                      Unchecked="PCMesCheckBox_Unchecked"/>
 
         </StackPanel>
     </Grid>
