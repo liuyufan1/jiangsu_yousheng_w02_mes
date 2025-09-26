@@ -191,7 +191,7 @@ public class SlipwayInstall : Device
 
     public override void OutStation()
     {
-        MainWindow.ShowLog(Name, "出站信号");
+        MainWindow.ShowLog(Name, "出站信号 " + Barcode);
         Task.Run(() =>
         {
             if (Barcode == "" || Barcode == null)
@@ -199,7 +199,7 @@ public class SlipwayInstall : Device
                 Barcode = "";
             }
 
-            var uploadByDevice = MesUploader.UploadByDevice(this, 1, true);
+            var uploadByDevice = MesUploader.UploadByDevice(this, 1, true); 
             Barcode = "";
             if (uploadByDevice.success)
             {

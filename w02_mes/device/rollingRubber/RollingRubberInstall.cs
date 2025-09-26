@@ -29,7 +29,7 @@ public class RollingRubberInstall : Device
         string? ip = ipSection[Name];
         if (ip == null)
         {
-            MainWindow.ShowLog("滚胶", "获取ip失败，name: " + Name);
+            MainWindow.ShowLog(Name, "获取ip失败，name: " + Name);
             return "";
         }
 
@@ -40,7 +40,7 @@ public class RollingRubberInstall : Device
 
     public (bool success, string message) InStation(string barcode)
     {
-        MainWindow.ShowLog("滚胶", "滚胶扫码: " + barcode);
+        MainWindow.ShowLog(Name, "滚胶扫码: " + barcode);
         return MesUploader.UploadByDevice(this, 0, false);
         
     }
@@ -57,10 +57,10 @@ public class RollingRubberInstall : Device
         var (success, message) = MesUploader.UploadByDevice(this, 1, true);
         if (!success)
         {
-            MainWindow.ShowLog("滚胶", "出站上传mes失败：" + message);
+            MainWindow.ShowLog(Name, "出站上传mes失败：" + message);
             return;
         }
-        MainWindow.ShowLog("滚胶", "出站上传mes成功");
+        MainWindow.ShowLog(Name, "出站上传mes成功");
     }
     
     public override string ToJson()

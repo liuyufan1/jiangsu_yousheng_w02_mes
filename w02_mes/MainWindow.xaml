@@ -66,7 +66,7 @@
                       Checked="BlockMesCheckBox_Checked"
                       Unchecked="BlockMesCheckBox_Unchecked"/>
             <!-- 屏蔽MES 单选框 -->
-            <CheckBox x:Name="BlockMesByPCCheckBox"
+            <CheckBox x:Name="BlockMesByPcCheckBox"
                       Content="PC片屏蔽MES"
                       VerticalAlignment="Center"
                       Margin="0,0,8,0"

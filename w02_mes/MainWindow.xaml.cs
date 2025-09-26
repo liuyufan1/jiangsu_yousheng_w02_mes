@@ -29,7 +29,7 @@ public partial class MainWindow : Window
     public static bool BlockMesEnabled { get; private set; } = false;
     
     // 贴PC片（滚胶） 屏蔽 MES
-    public static bool BlockMesByPCEnabled { get; private set; } = false;
+    public static bool BlockMesByPcEnabled { get; private set; } = false;
 
     public MainWindow()
     {
@@ -38,8 +38,8 @@ public partial class MainWindow : Window
         var appConfig = ConfigHelper.Load();
         BlockMesEnabled = appConfig.BlockMesEnabled;
         BlockMesCheckBox.IsChecked = appConfig.BlockMesEnabled;
-        BlockMesByPCEnabled = appConfig.BlockMesByPCEnabled;
-        BlockMesByPCCheckBox.IsChecked = appConfig.BlockMesByPCEnabled;
+        BlockMesByPcEnabled = appConfig.BlockMesByPcEnabled;
+        BlockMesByPcCheckBox.IsChecked = appConfig.BlockMesByPcEnabled;
         RefreshLogList();
     }
 
@@ -201,18 +201,18 @@ public partial class MainWindow : Window
 
     private void PCMesCheckBox_Checked(object sender, RoutedEventArgs e)
     {
-        BlockMesByPCEnabled = true;
+        BlockMesByPcEnabled = true;
         var appConfig = ConfigHelper.Load();
-        appConfig.BlockMesByPCEnabled = true;  // ⚡ 你需要在 AppConfig 类里增加这个字段
+        appConfig.BlockMesByPcEnabled = true;  // ⚡ 你需要在 AppConfig 类里增加这个字段
         ConfigHelper.Save(appConfig);
         ShowLog("UI", "PC片屏蔽MES 已启用");
     }
 
     private void PCMesCheckBox_Unchecked(object sender, RoutedEventArgs e)
     {
-        BlockMesByPCEnabled = false;
+        BlockMesByPcEnabled = false;
         var appConfig = ConfigHelper.Load();
-        appConfig.BlockMesByPCEnabled = false;
+        appConfig.BlockMesByPcEnabled = false;
         ConfigHelper.Save(appConfig);
         ShowLog("UI", "PC片屏蔽MES 已关闭");
     }

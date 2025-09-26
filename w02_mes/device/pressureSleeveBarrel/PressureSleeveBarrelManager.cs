@@ -33,7 +33,7 @@ public class PressureSleeveBarrelManager
             //     _ = pressureSleeveBarrel1.SendOk();
             //     break;
             case "完成":
-                MainWindow.ShowLog("压套筒", "完成");
+                MainWindow.ShowLog("压套筒", "完成 " + pressureSleeveBarrel1.Barcode);
                 // 读取压套桶数据
                 pressureSleeveBarrel1.SaveData();
                 _ = MesUploader.UploadByDevice(pressureSleeveBarrel1, 1, true);
