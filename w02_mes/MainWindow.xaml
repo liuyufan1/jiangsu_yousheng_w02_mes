@@ -73,6 +73,28 @@
                       Checked="PCMesCheckBox_Checked"
                       Unchecked="PCMesCheckBox_Unchecked"/>
 
+            <!-- 屏蔽滚胶 -->
+            <CheckBox x:Name="BlockGlueCheckBox"
+                      Content="屏蔽滚胶"
+                      VerticalAlignment="Center"
+                      Margin="0,0,8,0"
+                      Checked="BlockGlueCheckBox_Checked"
+                      Unchecked="BlockGlueCheckBox_Unchecked"/>
+
+            <!-- 屏蔽压套筒 -->
+            <CheckBox x:Name="BlockSleeveCheckBox"
+                      Content="屏蔽压套筒"
+                      VerticalAlignment="Center"
+                      Margin="0,0,8,0"
+                      Checked="BlockSleeveCheckBox_Checked"
+                      Unchecked="BlockSleeveCheckBox_Unchecked"/>
+            <!-- 查询历史按钮 -->
+            <Button x:Name="HistoryButton"
+                    Content="查询历史"
+                    Width="100"
+                    Height="28"
+                    Click="HistoryButton_Click"
+                    Margin="0,0,8,0"/>
         </StackPanel>
     </Grid>
 </Window>

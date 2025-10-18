@@ -21,7 +21,17 @@ public class PressureSleeveBarrelManager
                 if (!uploadByDevice.success)
                 {
                     MainWindow.ShowLog("压套筒", "上传mes失败：" + uploadByDevice.message);
-                    pressureSleeveBarrel1.Barcode = "";
+                    
+                    if (MainWindow.BlockSleeveEnabled)
+                    {
+                        MainWindow.ShowLog("压套筒", "MES开启屏蔽");
+                        pressureSleeveBarrel1.Barcode = pressureSleeveBarrel1.Barcode;
+                        _ = pressureSleeveBarrel1.SendOk();
+                    }
+                    else
+                    {
+                        pressureSleeveBarrel1.Barcode = "";
+                    }
                     return;
                 }
                 MainWindow.ShowLog("压套筒", "上传mes成功");

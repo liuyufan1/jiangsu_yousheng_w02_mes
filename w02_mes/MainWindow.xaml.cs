@@ -31,6 +31,12 @@ public partial class MainWindow : Window
     // 贴PC片（滚胶） 屏蔽 MES
     public static bool BlockMesByPcEnabled { get; private set; } = false;
 
+    // 屏蔽滚胶
+    public static bool BlockGlueEnabled { get; private set; } = false;
+
+    // 屏蔽压套筒
+    public static bool BlockSleeveEnabled { get; private set; } = false;
+
     public MainWindow()
     {
         InitializeComponent();
@@ -40,6 +46,10 @@ public partial class MainWindow : Window
         BlockMesCheckBox.IsChecked = appConfig.BlockMesEnabled;
         BlockMesByPcEnabled = appConfig.BlockMesByPcEnabled;
         BlockMesByPcCheckBox.IsChecked = appConfig.BlockMesByPcEnabled;
+        BlockGlueEnabled = appConfig.BlockGlueEnabled;
+        BlockGlueCheckBox.IsChecked = appConfig.BlockGlueEnabled;
+        BlockSleeveEnabled = appConfig.BlockSleeveEnabled;
+        BlockSleeveCheckBox.IsChecked = appConfig.BlockSleeveEnabled;
         RefreshLogList();
     }
 
@@ -215,5 +225,49 @@ public partial class MainWindow : Window
         appConfig.BlockMesByPcEnabled = false;
         ConfigHelper.Save(appConfig);
         ShowLog("UI", "PC片屏蔽MES 已关闭");
+    }
+    
+    // ✅ 屏蔽滚胶
+    private void BlockGlueCheckBox_Checked(object sender, RoutedEventArgs e)
+    {
+        BlockGlueEnabled = true;
+        var appConfig = ConfigHelper.Load();
+        appConfig.BlockGlueEnabled = true;   // ⚡ 你需要在 AppConfig 类里加上这个字段
+        ConfigHelper.Save(appConfig);
+        ShowLog("UI", "屏蔽滚胶 已启用");
+    }
+    private void BlockGlueCheckBox_Unchecked(object sender, RoutedEventArgs e)
+    {
+        BlockGlueEnabled = false;
+        var appConfig = ConfigHelper.Load();
+        appConfig.BlockGlueEnabled = false;
+        ConfigHelper.Save(appConfig);
+        ShowLog("UI", "屏蔽滚胶 已关闭");
+    }
+
+    // ✅ 屏蔽压套筒
+    private void BlockSleeveCheckBox_Checked(object sender, RoutedEventArgs e)
+    {
+        BlockSleeveEnabled = true;
+        var appConfig = ConfigHelper.Load();
+        appConfig.BlockSleeveEnabled = true;  // ⚡ 你需要在 AppConfig 类里加上这个字段
+        ConfigHelper.Save(appConfig);
+        ShowLog("UI", "屏蔽压套筒 已启用");
+    }
+    private void BlockSleeveCheckBox_Unchecked(object sender, RoutedEventArgs e)
+    {
+        BlockSleeveEnabled = false;
+        var appConfig = ConfigHelper.Load();
+        appConfig.BlockSleeveEnabled = false;
+        ConfigHelper.Save(appConfig);
+        ShowLog("UI", "屏蔽压套筒 已关闭");
+    }
+
+    private void HistoryButton_Click(object sender, RoutedEventArgs e)
+    {
+        
+        var win = new HistoryWindow();
+        win.Owner = this;
+        win.Show();
     }
 }

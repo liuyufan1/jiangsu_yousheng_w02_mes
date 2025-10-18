@@ -61,7 +61,7 @@ public class DataRepository
         {
             using var db = CreateDb();
             return await db.Queryable<DataEntity>()
-                .Where(d => d.Barcode == barcode)
+                .Where(d => d.Barcode.Contains(barcode))
                 .OrderBy(d => d.CreateTime, OrderByType.Desc)
                 .ToListAsync();
         }
@@ -69,6 +69,60 @@ public class DataRepository
         {
             MainWindow.ShowLog("sqlServer", $"查询数据失败: {ex.Message}");
             return new List<DataEntity>(); // 查询失败返回空列表
+        }
+    }
+    /// <summary>
+    /// 条码模糊查询 + 分页
+    /// </summary>
+    /// <param name="barcodeKeyword">条码关键字（允许为空，为空时查询全部）</param>
+    /// <param name="pageIndex">页码（从 1 开始）</param>
+    /// <param name="pageSize">每页条数（建议 10~200）</param>
+    public static async Task<PagedResult<DataEntity>> GetByBarcodePagedAsync(
+        string? barcodeKeyword,
+        int pageIndex = 1,
+        int pageSize  = 20)
+    {
+        // 合法化参数
+        if (pageIndex < 1) pageIndex = 1;
+        if (pageSize  < 1) pageSize  = 20;
+        if (pageSize  > 200) pageSize = 200;
+
+        try
+        {
+            using var db = CreateDb();
+
+            var query = db.Queryable<DataEntity>();
+
+            if (!string.IsNullOrWhiteSpace(barcodeKeyword))
+            {
+                query = query.Where(d => d.Barcode.Contains(barcodeKeyword));
+            }
+
+            query = query.OrderBy(d => d.CreateTime, OrderByType.Desc);
+
+            RefAsync<int> total = 0;
+            var list = await query.ToPageListAsync(pageIndex, pageSize, total);
+
+            return new PagedResult<DataEntity>
+            {
+                PageIndex = pageIndex,
+                PageSize  = pageSize,
+                Total     = total,
+                Pages     = (int)Math.Ceiling(total * 1.0 / pageSize),
+                Records   = list
+            };
+        }
+        catch (Exception ex)
+        {
+            MainWindow.ShowLog("sqlServer", $"分页查询数据失败: {ex.Message}");
+            return new PagedResult<DataEntity>
+            {
+                PageIndex = pageIndex,
+                PageSize  = pageSize,
+                Total     = 0,
+                Pages     = 0,
+                Records   = new List<DataEntity>()
+            };
         }
     }
 

@@ -20,6 +20,11 @@ public class GelatinizeManager
                 MainWindow.ShowLog("w02涂胶", $"扫码结果:{readBarcode}");
                 gelatinize1.Barcode = readBarcode;
                 var (uploadByDevice, resMessage) = MesUploader.UploadByDevice(gelatinize1, 0, true);
+                if (MainWindow.BlockGlueEnabled)
+                {
+                    MainWindow.ShowLog("w02涂胶", "MES开启屏蔽");
+                    uploadByDevice = true;
+                }
                 _ = gelatinize1.SendOkOrFail(uploadByDevice);
                 if (uploadByDevice)
                 {

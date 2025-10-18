@@ -1,0 +1,94 @@
+<Window x:Class="w02_mes.HistoryWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        Title="查询历史" Height="560" Width="980">
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>   <!-- 顶部工具条 -->
+            <RowDefinition Height="*"/>      <!-- 结果表格 -->
+            <RowDefinition Height="Auto"/>   <!-- 分页条 -->
+        </Grid.RowDefinitions>
+
+        <!-- 顶部：条码输入 + 查询 + 状态 -->
+        <DockPanel LastChildFill="False" Margin="0,0,0,8">
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                <TextBlock Text="条码关键词：" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <TextBox x:Name="BarcodeBox"
+                         Width="320" Height="28"
+                         VerticalContentAlignment="Center"
+                         Margin="0,0,8,0"
+                         KeyDown="BarcodeBox_KeyDown"
+                         ToolTip="支持模糊搜索，例如输入 123 将匹配包含 123 的条码"/>
+                <TextBlock Text="每页：" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                <ComboBox x:Name="PageSizeBox"
+                          Width="80" Height="28"
+                          SelectionChanged="PageSizeBox_SelectionChanged"
+                          Margin="0,0,8,0">
+                    <ComboBoxItem Content="10"/>
+                    <ComboBoxItem Content="20"/>
+                    <ComboBoxItem Content="50"/>
+                    <ComboBoxItem Content="100"/>
+                </ComboBox>
+                <Button Content="查询"
+                        Width="90" Height="28"
+                        Click="SearchButton_Click"
+                        Margin="0,0,8,0"/>
+                <TextBlock x:Name="StatusText"
+                           VerticalAlignment="Center"
+                           Foreground="Gray"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                <ProgressBar x:Name="BusyBar"
+                             Width="160" Height="6"
+                             VerticalAlignment="Center"
+                             IsIndeterminate="True"
+                             Visibility="Collapsed"
+                             Margin="8,0,0,0"/>
+            </StackPanel>
+        </DockPanel>
+
+        <!-- 结果表格 -->
+        <DataGrid x:Name="ResultGrid"
+                  Grid.Row="1"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  IsReadOnly="True"
+                  ItemsSource="{Binding}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="70"/>
+                <DataGridTextColumn Header="条码" Binding="{Binding Barcode}" Width="220"/>
+                <DataGridTextColumn Header="Step" Binding="{Binding Step}" Width="220"/>
+                <DataGridTextColumn Header="创建时间" Binding="{Binding CreateTime}" Width="180" />
+                <DataGridTemplateColumn Header="操作" Width="120">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="导出Excel"
+                                    Padding="8,2"
+                                    Click="ExportButton_Click"
+                                    IsEnabled="{Binding CanExport}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- 分页条 -->
+        <DockPanel Grid.Row="2" Margin="0,8,0,0">
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                <Button Content="⟨ 上一页" Width="90" Height="28" Margin="0,0,8,0" Click="PrevButton_Click"/>
+                <TextBlock Text="页码：" VerticalAlignment="Center"/>
+                <TextBox x:Name="PageIndexBox" Width="60" Height="28" Margin="4,0,8,0"
+                         VerticalContentAlignment="Center" TextAlignment="Center"
+                         TextChanged="PageIndexBox_TextChanged"/>
+                <Button Content="跳转" Width="70" Height="28" Margin="0,0,8,0" Click="GotoButton_Click"/>
+                <Button Content="下一页 ⟩" Width="90" Height="28" Click="NextButton_Click"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                <TextBlock x:Name="PagerInfoText" VerticalAlignment="Center" />
+            </StackPanel>
+        </DockPanel>
+    </Grid>
+</Window>
